@@ -12,15 +12,6 @@ input:
     - name: Heater Plug
       type: DSPW215
       baseurl: http://10.0.1.21
-    - name: Dryer
-      type: DSPW215
-      baseurl: http://10.0.1.22
-    - name: Washing Machine
-      type: DSPW215
-      baseurl: http://10.0.1.23
-    - name: Servers
-      type: DSPW215
-      baseurl: http://10.0.1.24
       
 
 # Configure what outputs to use when sending the data collected by the beat.
