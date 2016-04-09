@@ -1,0 +1,121 @@
+################### MeterBeat Configuration Example #########################
+
+############################# Input ############################################
+input:
+  # In seconds, defines how often to poll devices
+  period: 5
+
+  devices:
+    - name: Fridge Plug
+      type: DSPW215
+      baseurl: http://10.0.1.20
+    - name: Heater Plug
+      type: DSPW215
+      baseurl: http://10.0.1.21
+    - name: Dryer
+      type: DSPW215
+      baseurl: http://10.0.1.22
+    - name: Washing Machine
+      type: DSPW215
+      baseurl: http://10.0.1.23
+    - name: Servers
+      type: DSPW215
+      baseurl: http://10.0.1.24
+      
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+#output:
+
+  ### Elasticsearch as output
+ # elasticsearch:
+    # Array of hosts to connect to.
+    # Scheme and port can be left out and will be set to the default (http and 9200)
+    # In case you specify and additional path, the scheme is required: http://localhost:9200/path
+    # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
+  #  hosts: ["localhost:9200"]
+
+    # Optional protocol and basic auth credentials.
+    #protocol: "https"
+    #username: "admin"
+    #password: "s3cr3t"
+
+    # Number of workers per Elasticsearch host.
+    #worker: 1
+
+    # Optional index name. The default is "topbeat" and generates
+    # [topbeat-]YYYY.MM.DD keys.
+   # index: "meterbeat"
+
+    # Optional HTTP Path
+    #path: "/elasticsearch"
+
+    # The number of times a particular Elasticsearch index operation is attempted. If
+    # the indexing operation doesn't succeed after this many retries, the events are
+    # dropped. The default is 3.
+    #max_retries: 3
+
+    # Configure http request timeout in seconds before failing an request to Elasticsearch.
+    #timeout: 10
+    
+  ### Logstash as output
+  #logstash:
+    # The Logstash hosts
+    #hosts: ["localhost:5044"]
+
+    # Number of workers per Logstash host.
+    #worker: 1
+
+    # Set gzip compression level.
+    #compression_level: 3
+
+    # Optional load balance the events between the Logstash hosts
+    #loadbalance: true
+
+    # Optional index name. The default index name depends on the each beat.
+    # For Packetbeat, the default is set to packetbeat, for Topbeat
+    # top topbeat and for Filebeat to filebeat.
+    #index: topbeat
+
+############################# Logging #########################################
+
+#logging:
+ # file:
+  #  path: /var/log/beats/
+   # name: meterbeat.log
+
+    # Configure log file size limit. If limit is reached, log file will be
+    # automatically rotated
+    #rotateeverybytes: 10485760 # = 10MB
+
+    # Number of rotated log files to keep. Oldest files will be deleted first.
+    #keepfiles: 7
+
+  # Sets log level. The default log level is error.
+  # Available log levels are: critical, error, warning, info, debug
+ # level: error
+    
+    
+  ### File as output
+  #file:
+    # Path to the directory where to save the generated files. The option is mandatory.
+    #path: "/tmp/topbeat"
+
+    # Name of the generated files. The default is `topbeat` and it generates files: `topbeat`, `topbeat.1`, `topbeat.2`, etc.
+    #filename: topbeat
+
+    # Maximum size in kilobytes of each file. When this size is reached, the files are
+    # rotated. The default value is 10 MB.
+    #rotate_every_kb: 10000
+
+    # Maximum number of files under path. When this number of files is reached, the
+    # oldest file is deleted and the rest are shifted from last to first. The default
+    # is 7 files.
+    #number_of_files: 7
+
+
+  ### Console output
+  # console:
+    # Pretty print json event
+    #pretty: false
+    
