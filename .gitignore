@@ -4,3 +4,4 @@
 /.classpath
 /Logging.txt
 /bin
+/conf/meterbeat.yml
