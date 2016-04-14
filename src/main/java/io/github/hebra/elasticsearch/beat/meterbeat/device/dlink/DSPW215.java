@@ -7,8 +7,8 @@
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
  * version.
  *
- * MeterBeat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * MeterBeat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with MeterBeat. If not, see
  * <http://www.gnu.org/licenses/>.
@@ -16,22 +16,30 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.device.dlink;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.NoConnectionReuseStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
 import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
-import lombok.Cleanup;
 import lombok.Setter;
 
 public class DSPW215 implements IDevice
@@ -43,52 +51,31 @@ public class DSPW215 implements IDevice
 	@Setter
 	private DeviceConfig config;
 
+	@SuppressWarnings( "resource" )
 	@Override
 	public String fetchData()
 	{
 		final String url = config.getBaseURL() + "/my_cgi.cgi?" + ( new BigInteger( 130, secureRandom ).toString( 32 ) );
 
-		String tWatt = null;
-
 		try
 		{
+			final HttpClient client = HttpClientBuilder.create().setConnectionTimeToLive( 5, TimeUnit.SECONDS ).setConnectionReuseStrategy( new NoConnectionReuseStrategy() ).build();
+			final HttpPost post = new HttpPost( url );
 
-			final URL obj = new URL( url );
-			final HttpURLConnection con = ( HttpURLConnection ) obj.openConnection();
+			post.setHeader( "User-Agent", USER_AGENT );
+			post.setHeader( "Accept-Language", "en-US,en;q=0.5" );
 
-			con.setConnectTimeout( 5000 );
+			final List<NameValuePair> urlParameters = new ArrayList<>();
+			urlParameters.add( new BasicNameValuePair( "request", "create_chklst" ) );
+			post.setEntity( new UrlEncodedFormEntity( urlParameters ) );
 
-			// add reuqest header
-			con.setRequestMethod( "POST" );
-			con.setRequestProperty( "User-Agent", USER_AGENT );
-			con.setRequestProperty( "Accept-Language", "en-US,en;q=0.5" );
+			final HttpResponse response = client.execute( post );
 
-			final String urlParameters = "request=create_chklst";
+			final String content = IOUtils.toString( response.getEntity().getContent(), Charsets.US_ASCII );
 
-			// Send post request
-			con.setDoOutput( true );
-			@Cleanup final DataOutputStream wr = new DataOutputStream( con.getOutputStream() );
-			wr.writeBytes( urlParameters );
-			wr.flush();
+			EntityUtils.consume( response.getEntity() );
 
-			final int responseCode = con.getResponseCode();
-
-			final String response = IOUtils.toString( con.getInputStream(), Charsets.US_ASCII );
-
-
-
-			//MeasurementResult.of();
-
-			// thermal
-			// power on off
-			// power consumption in watt
-
-			tWatt = response.split( "Meter Watt: ", 2 )[ 1 ].trim();
-
-			System.out.println( config.getName() );
-			System.out.println( response );
-			System.out.println( tWatt );
-
+			return content.split( "Meter Watt: ", 2 )[ 1 ].trim();
 		}
 		catch ( final SocketTimeoutException stEx )
 		{
@@ -99,7 +86,6 @@ public class DSPW215 implements IDevice
 			LOGGER.error( ioEx.getMessage(), ioEx );
 		}
 
-		return tWatt;
-
+		return null;
 	}
 }
