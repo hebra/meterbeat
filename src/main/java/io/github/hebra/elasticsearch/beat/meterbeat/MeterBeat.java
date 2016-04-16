@@ -7,8 +7,8 @@
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
  * version.
  *
- * MeterBeat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * MeterBeat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with MeterBeat. If not, see
  * <http://www.gnu.org/licenses/>.
@@ -30,7 +30,6 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import io.github.hebra.elasticsearch.beat.meterbeat.akka.MasterActor;
 import io.github.hebra.elasticsearch.beat.meterbeat.config.Config;
-import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
 
 public class MeterBeat
 {
@@ -49,20 +48,17 @@ public class MeterBeat
 
 		final ActorRef master = _system.actorOf( new Props( MasterActor.class ), "master" );
 
-		config.getInput().getDevices().parallelStream().forEach( deviceConfig_ -> {
+		config.getInput().getDevices().parallelStream().forEach( deviceConfig -> {
 
 			try
 			{
-				final IDevice device = deviceConfig_.getType().getHandlerClass().newInstance();
-				device.setConfig( deviceConfig_ );
-
-				master.tell( device );
+				master.tell( deviceConfig.getType().getHandlerClass().newInstance().config( deviceConfig ) );
 			}
 			catch ( final IllegalAccessException
-					| InstantiationException exception_ )
+					| InstantiationException iEx )
 			{
-				LOGGER.error( exception_.getMessage() );
-				exception_.printStackTrace();
+				LOGGER.error( iEx.getMessage() );
+				iEx.printStackTrace();
 			}
 		} );
 	}

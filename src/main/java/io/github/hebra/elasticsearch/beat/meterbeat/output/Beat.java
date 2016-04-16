@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -42,4 +43,10 @@ public class Beat
 			LOGGER.error( "Unable to get hostname for JSON output: {}", uhEx.getMessage() );
 		}
 	}
+
+	public static Beat fromConfig(final DeviceConfig config)
+	{
+		return new Beat().beatName( config.getName() );
+	}
+
 }

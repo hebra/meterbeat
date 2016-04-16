@@ -40,8 +40,11 @@ import org.slf4j.LoggerFactory;
 
 import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
 import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Accessors( fluent = true )
 public class DSPW215 implements IDevice
 {
 	private final SecureRandom secureRandom = new SecureRandom();
@@ -49,6 +52,7 @@ public class DSPW215 implements IDevice
 	private static final Logger LOGGER = LoggerFactory.getLogger( DSPW215.class );
 
 	@Setter
+	@Getter
 	private DeviceConfig config;
 
 	@SuppressWarnings( "resource" )

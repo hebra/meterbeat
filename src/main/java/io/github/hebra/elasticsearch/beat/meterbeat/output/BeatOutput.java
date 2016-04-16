@@ -16,7 +16,12 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.output;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +34,10 @@ import lombok.experimental.Accessors;
 @Accessors(fluent=true)
 public class BeatOutput
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger( BeatOutput.class );
+
+	private final ObjectMapper mapper = ObjectMapperFactory.get();
+
 	/**
 	 * The timestamp of when the measurements were taken. The precision is in milliseconds. The timezone is UTC.
 	 */
@@ -63,6 +72,20 @@ public class BeatOutput
 
 	public BeatOutput()
 	{
+	}
+
+	public String asJson()
+	{
+		try
+		{
+			return mapper.writeValueAsString( this );
+		}
+		catch ( final JsonProcessingException jpEx )
+		{
+			LOGGER.error( jpEx.getMessage() );
+		}
+
+		return "";
 	}
 
 }

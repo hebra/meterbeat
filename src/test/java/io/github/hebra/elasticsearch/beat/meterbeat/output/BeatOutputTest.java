@@ -10,8 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BeatOutputTest
 {
-	ObjectMapper mapper = new ObjectMapper();
-
+	ObjectMapper mapper = ObjectMapperFactory.get();
 
 	private static BeatOutput getBeat()
 	{

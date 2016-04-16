@@ -16,41 +16,45 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.akka;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.util.Duration;
-import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
-import io.github.hebra.elasticsearch.beat.meterbeat.output.Beat;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
-import io.github.hebra.elasticsearch.beat.meterbeat.output.Power;
+import io.github.hebra.elasticsearch.beat.meterbeat.output.JestClientFactory;
+import io.searchbox.client.JestClient;
+import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.IndicesExists;
 
-public class FetchActor extends UntypedActor
+public class PushElasticSearchActor extends UntypedActor
 {
-	private final ActorRef pushElasticActor = getContext().actorOf( new Props( PushElasticSearchActor.class ), "pushelastic" );
+	private static final Logger LOGGER = LoggerFactory.getLogger( PushElasticSearchActor.class );
 
 	@Override
 	public void onReceive( final Object _message ) throws Exception
 	{
-		if ( _message instanceof IDevice )
+		if ( _message != null && _message instanceof BeatOutput )
 		{
-			final IDevice device = ( IDevice ) _message;
 
-			Optional.ofNullable( device.fetchData() ).ifPresent( watt -> {
-				pushElasticActor.tell( new BeatOutput().beat( Beat.fromConfig( device.config() ) ).power( new Power( watt ) ) );
-			} );
 
-			final Duration tDuration = Duration.create( 5L, TimeUnit.SECONDS );
-			getContext().system().scheduler().scheduleOnce( tDuration, getSelf(), _message );
+			LOGGER.error( ((BeatOutput) _message).asJson() );
 
+
+
+			final JestClient client = JestClientFactory.get();
+
+
+			LOGGER.info( String.valueOf(client.execute(new IndicesExists.Builder("meterbeat").build()).isSucceeded() ));
+
+			if (!client.execute(new IndicesExists.Builder("meterbeat").build()).isSucceeded())
+			{
+				client.execute(new CreateIndex.Builder("meterbeat").build());
+			}
 		}
 		else
 		{
 			unhandled( _message );
 		}
-	}
 
+	}
 }
