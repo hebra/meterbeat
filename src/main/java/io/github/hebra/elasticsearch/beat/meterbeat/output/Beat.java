@@ -2,6 +2,7 @@ package io.github.hebra.elasticsearch.beat.meterbeat.output;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import lombok.experimental.Accessors;
 /**
  * This class acts as a data container for beat-specific information.
  */
-@Accessors(fluent=true)
+@Accessors( fluent = true )
 public class Beat
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger( Beat.class );
@@ -25,12 +26,17 @@ public class Beat
 	 * Name of the Beat sending the events. If the shipper name is set in the configuration file, then that value is
 	 * used. If it is not set, the hostname is used.
 	 */
-	@JsonProperty( "name" ) @Setter @Getter private String beatName;
+	@JsonProperty( "name" )
+	@Getter
+	private String beatName;
 
 	/**
 	 * The hostname as returned by the operating system on which the Beat is running.
 	 */
-	@JsonProperty( "hostname" ) @Setter @Getter private String beatHostname = "localhost";
+	@JsonProperty( "hostname" )
+	@Setter
+	@Getter
+	private String beatHostname = "localhost";
 
 	public Beat()
 	{
@@ -44,9 +50,17 @@ public class Beat
 		}
 	}
 
-	public static Beat fromConfig(final DeviceConfig config)
+	public static Beat fromConfig( final DeviceConfig config )
 	{
 		return new Beat().beatName( config.getName() );
 	}
 
+	public Beat beatName( final String _beatName )
+	{
+		Optional.ofNullable( _beatName ).ifPresent( name -> {
+			beatName = _beatName.replaceAll( " ", "" );
+		} );
+
+		return this;
+	}
 }

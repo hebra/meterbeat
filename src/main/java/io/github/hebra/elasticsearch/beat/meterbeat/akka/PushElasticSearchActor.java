@@ -16,6 +16,8 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.akka;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +25,10 @@ import akka.actor.UntypedActor;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.JestClientFactory;
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.indices.mapping.PutMapping;
 
 public class PushElasticSearchActor extends UntypedActor
 {
@@ -35,20 +39,26 @@ public class PushElasticSearchActor extends UntypedActor
 	{
 		if ( _message != null && _message instanceof BeatOutput )
 		{
-
-
-			LOGGER.error( ((BeatOutput) _message).asJson() );
-
-
+			final String index = "meterbeat";
 
 			final JestClient client = JestClientFactory.get();
 
-
-			LOGGER.info( String.valueOf(client.execute(new IndicesExists.Builder("meterbeat").build()).isSucceeded() ));
-
-			if (!client.execute(new IndicesExists.Builder("meterbeat").build()).isSucceeded())
+			try
 			{
-				client.execute(new CreateIndex.Builder("meterbeat").build());
+				if ( !client.execute( new IndicesExists.Builder( index ).build() ).isSucceeded() )
+				{
+					client.execute( new CreateIndex.Builder( index ).build() );
+
+					// Add a default mapping to store timestamps
+					client.execute( new PutMapping.Builder( index, ( ( BeatOutput ) _message ).type(), "{\"_timestamp\":{\"enabled\" : true}}" ).build() );
+				}
+
+				client.execute( new Index.Builder( ( ( BeatOutput ) _message ).asJson() ).index( index ).type( ( ( BeatOutput ) _message ).type() ).build() );
+
+			}
+			catch ( final IOException ioEx )
+			{
+				LOGGER.error( "Exception while sending message to ElasticSearch: {}", ioEx.getMessage() );
 			}
 		}
 		else
