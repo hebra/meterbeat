@@ -7,16 +7,48 @@
  * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-package io.github.hebra.elasticsearch.beat.meterbeat.config.output;
+package io.github.hebra.elasticsearch.beat.meterbeat.config.output.elasticsearch;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.config.output.elasticsearch.Elasticsearch;
 import lombok.Getter;
 
-public class Output
-{
-	@JsonProperty( "elasticsearch" )
+public class Elasticsearch {
+	@JsonProperty("hosts")
 	@Getter
-	private Elasticsearch elasticsearch;
+	private List<String> hosts;
+
+	@JsonProperty("protocol")
+	@Getter
+	private String protocol;
+
+	@JsonProperty("username")
+	@Getter
+	private String username;
+
+	@JsonProperty("password")
+	@Getter
+	private String password;
+
+	@JsonProperty("worker")
+	@Getter
+	private int worker = 1;
+
+	@JsonProperty("index")
+	@Getter
+	private String index;
+
+	@JsonProperty("path")
+	@Getter
+	private String path;
+
+	@JsonProperty("max_retries")
+	@Getter
+	private int maxRetries = 3;
+
+	@JsonProperty("timeout")
+	@Getter
+	private int timeout = 10;
 }

@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import akka.actor.UntypedActor;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.Config;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.output.Output;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.output.elasticsearch.Elasticsearch;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.JestClientFactory;
 import io.searchbox.client.JestClient;
@@ -33,6 +36,8 @@ import io.searchbox.indices.mapping.PutMapping;
 public class PushElasticSearchActor extends UntypedActor
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger( PushElasticSearchActor.class );
+
+	private final Elasticsearch output = Config.get().getOutput().getElasticsearch();
 
 	@Override
 	public void onReceive( final Object _message ) throws Exception

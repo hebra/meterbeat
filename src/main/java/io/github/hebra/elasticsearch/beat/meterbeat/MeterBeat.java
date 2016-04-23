@@ -44,7 +44,7 @@ public class MeterBeat
 		final ObjectMapper mapper = new ObjectMapper( new YAMLFactory() );
 		final Config config = mapper.readValue( configFile, Config.class );
 
-		final ActorSystem _system = ActorSystem.create( "MapReduceApp" );
+		final ActorSystem _system = ActorSystem.create( "MeterBeat" );
 
 		final ActorRef master = _system.actorOf( new Props( MasterActor.class ), "master" );
 
