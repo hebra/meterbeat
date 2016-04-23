@@ -38,7 +38,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.input.DeviceConfig;
 import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
 import lombok.Getter;
 import lombok.Setter;

@@ -18,6 +18,9 @@ package io.github.hebra.elasticsearch.beat.meterbeat.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.github.hebra.elasticsearch.beat.meterbeat.config.input.Input;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.logging.Logging;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.output.Output;
 import lombok.Getter;
 
 public class Config

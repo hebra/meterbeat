@@ -14,7 +14,7 @@
  * <http://www.gnu.org/licenses/>.
  ***/
 
-package io.github.hebra.elasticsearch.beat.meterbeat.config;
+package io.github.hebra.elasticsearch.beat.meterbeat.config.output;
 
 public class Output
 {

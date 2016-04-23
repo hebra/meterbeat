@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.input.DeviceConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

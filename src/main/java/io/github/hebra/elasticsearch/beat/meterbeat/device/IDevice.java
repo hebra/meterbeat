@@ -16,7 +16,7 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.device;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceConfig;
+import io.github.hebra.elasticsearch.beat.meterbeat.config.input.DeviceConfig;
 
 public interface IDevice
 {
