@@ -2,6 +2,7 @@
 /.settings/
 /build/
 /.classpath
+/.project
 /Logging.txt
 /bin
 /conf/meterbeat.yml
