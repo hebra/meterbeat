@@ -14,28 +14,26 @@
  * <http://www.gnu.org/licenses/>.
  ***/
 
-package io.github.hebra.elasticsearch.beat.meterbeat.config.input;
+package io.github.hebra.elasticsearch.beat.meterbeat.configuration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.github.hebra.elasticsearch.beat.meterbeat.config.DeviceType;
+import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
 import lombok.Getter;
 
-public class DeviceConfig
+/**
+ * Enumeration to map a device type to its handler class.
+ *
+ * @author Hendrik Brandt
+ */
+public enum DeviceType
 {
-	@JsonProperty( "type" )
-	@Getter
-	private DeviceType type;
+	DSPW215( io.github.hebra.elasticsearch.beat.meterbeat.device.dlink.DSPW215.class );
 
-	@JsonProperty( "name" )
 	@Getter
-	private String name;
+	private Class<? extends IDevice> handlerClass;
 
-	@JsonProperty( "baseurl" )
-	@Getter
-	private String baseURL;
-
-	@JsonProperty( "period" )
-	@Getter
-	private final int period = 5;
+	private DeviceType( final Class<? extends IDevice> _handlerClass )
+	{
+		handlerClass = _handlerClass;
+	}
 }
+

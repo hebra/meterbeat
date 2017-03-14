@@ -1,0 +1,42 @@
+{"properties": [
+  {
+    "name": "output.csv.path",
+    "type": "java.lang.String",
+    "description": "The relative or absolute location of the CSV file"
+  },
+  {
+    "name": "output.csv.filename",
+    "type": "java.lang.String",
+    "description": "The filename of the CSV output file"
+  },
+  {
+    "name": "output.csv.delimiter",
+    "type": "java.lang.String",
+    "description": "The column separator to use in the CSV file"
+  },
+  {
+    "name": "output.csv.quote",
+    "type": "java.lang.String",
+    "description": "The quote character to surround column values with, can be empty."
+  },
+  {
+    "name": "output.csv.enable",
+    "type": "java.lang.String",
+    "description": "Set to true to enable the CSV file output."
+  },
+  {
+    "name": "input.period",
+    "type": "java.lang.Long",
+    "description": "The refresh rate for fetching data from devices in seconds."
+  },
+  {
+    "name": "input.devices",
+    "type": "java.util.List",
+    "description": "The list of all devices to fetch and collect data from."
+  },
+  {
+    "name": "input.timeout",
+    "type": "java.lang.Long",
+    "description": "The HTTP connection timeout in seconds when fetching data from a device"
+  }
+]}

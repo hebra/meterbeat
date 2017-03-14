@@ -9,46 +9,58 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.config.output.elasticsearch;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 
-public class Elasticsearch {
-	@JsonProperty("hosts")
+public class Elasticsearch
+{
+
+	SimpleDateFormat dateFormat = new SimpleDateFormat( "YYYY.MM.dd" );
+
+	@JsonProperty( "hosts" )
 	@Getter
 	private List<String> hosts;
 
-	@JsonProperty("protocol")
+	@JsonProperty( "protocol" )
 	@Getter
 	private String protocol;
 
-	@JsonProperty("username")
+	@JsonProperty( "username" )
 	@Getter
 	private String username;
 
-	@JsonProperty("password")
+	@JsonProperty( "password" )
 	@Getter
 	private String password;
 
-	@JsonProperty("worker")
-	@Getter
-	private int worker = 1;
-
-	@JsonProperty("index")
-	@Getter
+	@JsonProperty( "index" )
 	private String index;
 
-	@JsonProperty("path")
+	@JsonProperty( "path" )
 	@Getter
 	private String path;
 
-	@JsonProperty("max_retries")
+	@JsonProperty( "max_retries" )
 	@Getter
-	private int maxRetries = 3;
+	private final int maxRetries = 3;
 
-	@JsonProperty("timeout")
+	@JsonProperty( "timeout" )
 	@Getter
-	private int timeout = 10;
+	private final int timeout = 10;
+
+	/**
+	 * Get the Elasticsearch index name with a daily pattern
+	 *
+	 * @return the index name
+	 */
+	public String getIndex()
+	{
+		return ( index == null ? "meterbeat" : index ).concat( "-" ).concat( dateFormat.format( new Date() ) );
+	}
+
 }

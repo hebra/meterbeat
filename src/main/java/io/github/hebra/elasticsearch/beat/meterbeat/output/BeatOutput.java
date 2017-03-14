@@ -1,20 +1,16 @@
 /**
- * (C) 2016 Hendrik Brandt <https://github.com/hebra/>
- *
- * This file is part of MeterBeat.
- *
- * MeterBeat is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * MeterBeat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with MeterBeat. If not, see
- * <http://www.gnu.org/licenses/>.
+ * (C) 2016 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
+ * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
  ***/
 
 package io.github.hebra.elasticsearch.beat.meterbeat.output;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +27,7 @@ import lombok.experimental.Accessors;
  * This is the root class for serializing MeterBeat data to a JSON string which can be send to ElasticSearch, Logstash
  * or a file.
  */
-@Accessors(fluent=true)
+@Accessors( fluent = true )
 public class BeatOutput
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger( BeatOutput.class );
@@ -72,6 +68,11 @@ public class BeatOutput
 
 	public BeatOutput()
 	{
+	}
+
+	public Iterable < String > asIterable()
+	{
+		return Arrays.asList( beat.beatName(), type, String.valueOf( power.value() ), power.unit(), String.valueOf( timestamp ) );
 	}
 
 	public String asJson()

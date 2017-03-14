@@ -12,43 +12,57 @@ package io.github.hebra.elasticsearch.beat.meterbeat.akka;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import akka.actor.ActorRef;
-import akka.actor.Props;
+import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;
-import akka.util.Duration;
-import io.github.hebra.elasticsearch.beat.meterbeat.config.Config;
-import io.github.hebra.elasticsearch.beat.meterbeat.config.output.Output;
+import io.github.hebra.elasticsearch.beat.meterbeat.configuration.InputDevicesConfiguration;
 import io.github.hebra.elasticsearch.beat.meterbeat.device.IDevice;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.Beat;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
 import io.github.hebra.elasticsearch.beat.meterbeat.output.Power;
+import scala.concurrent.duration.Duration;
 
+@Component
+@Scope( "prototype" )
 public class FetchActor extends UntypedActor
 {
-	private final ActorRef pushElasticActor = getContext().actorOf( new Props( PushElasticSearchActor.class ), "pushelastic" );
+	@Autowired
+	private ActorSystem actorSystem;
 
-	private final Output output = Config.get().getOutput();
+	@Autowired
+	private SpringExtension springExtension;
+
+	@Autowired
+	private InputDevicesConfiguration inputDevicesConfiguration;
+
+	private ActorRef pushOutputActor;
 
 	@Override
-	public void onReceive( final Object _message ) throws Exception
+	public void onReceive( final Object message ) throws Exception
 	{
-		if ( _message instanceof IDevice )
+		if ( pushOutputActor == null )
 		{
-			final IDevice device = ( IDevice ) _message;
+			pushOutputActor = actorSystem.actorOf( springExtension.props( "pushOutputActor" ), "push" );
+		}
+
+		if ( message instanceof IDevice )
+		{
+			final IDevice device = ( IDevice ) message;
 
 			Optional.ofNullable( device.fetchData() ).ifPresent( watt -> {
-				Optional.ofNullable( output.getElasticsearch() ).ifPresent( es -> {
-					pushElasticActor.tell( new BeatOutput().beat( Beat.fromConfig( device.config() ) ).power( new Power( watt ) ) );
-				} );
+				pushOutputActor.tell( new BeatOutput().beat( Beat.fromConfig( device.config() ) ).power( new Power( watt ) ), getSelf() );
 			} );
 
-			final Duration tDuration = Duration.create( 5L, TimeUnit.SECONDS );
-			getContext().system().scheduler().scheduleOnce( tDuration, getSelf(), _message );
+			actorSystem.scheduler().scheduleOnce( Duration.create( inputDevicesConfiguration.getPeriod(), TimeUnit.SECONDS ), getSelf(), message, actorSystem.dispatcher(), null );
 
 		}
 		else
 		{
-			unhandled( _message );
+			unhandled( message );
 		}
 	}
 

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.config.input.DeviceConfig;
+import io.github.hebra.elasticsearch.beat.meterbeat.configuration.InputDevicesConfiguration.Device;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -50,7 +50,7 @@ public class Beat
 		}
 	}
 
-	public static Beat fromConfig( final DeviceConfig config )
+	public static Beat fromConfig( final Device config )
 	{
 		return new Beat().beatName( config.getName() );
 	}

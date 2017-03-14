@@ -4,39 +4,44 @@
 input:
   # In seconds, defines how often to poll devices
   period: 5
-
+  timeout: 15
   devices:
-    - name: Fridge Plug
+    - name: Sample Plug 1
       type: DSPW215
-      baseurl: http://10.0.1.20
-    - name: Heater Plug
+      baseurl: http://10.0.0.2
+    - name: Sample Plug 2
       type: DSPW215
-      baseurl: http://10.0.1.21
+      baseurl: http://10.0.0.3
       
 
 # Configure what outputs to use when sending the data collected by the beat.
 # Multiple outputs may be used.
-#output:
-
+output:
+  csv:
+    enable: false
+    path: "<PATH_TO_OUTPUT_FILE>"
+    filename: "<NAME_OF_OUTPUT_FILE>"
+    delimiter: ","
+    quote: '"'
+    
   ### Elasticsearch as output
- # elasticsearch:
+  elasticsearch:
     # Array of hosts to connect to.
     # Scheme and port can be left out and will be set to the default (http and 9200)
     # In case you specify and additional path, the scheme is required: http://localhost:9200/path
     # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-  #  hosts: ["localhost:9200"]
+    hosts: ["http://10.0.1.2:9200"]
 
     # Optional protocol and basic auth credentials.
-    #protocol: "https"
     #username: "admin"
     #password: "s3cr3t"
 
     # Number of workers per Elasticsearch host.
     #worker: 1
 
-    # Optional index name. The default is "topbeat" and generates
-    # [topbeat-]YYYY.MM.DD keys.
-   # index: "meterbeat"
+    # Optional index name. The default is "meterbeat" and generates
+    # [meterbeat-]YYYY.MM.DD keys.
+    index: "meterbeat"
 
     # Optional HTTP Path
     #path: "/elasticsearch"
