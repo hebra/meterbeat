@@ -75,43 +75,8 @@ output:
 
 ############################# Logging #########################################
 
-#logging:
- # file:
-  #  path: /var/log/beats/
-   # name: meterbeat.log
-
-    # Configure log file size limit. If limit is reached, log file will be
-    # automatically rotated
-    #rotateeverybytes: 10485760 # = 10MB
-
-    # Number of rotated log files to keep. Oldest files will be deleted first.
-    #keepfiles: 7
-
-  # Sets log level. The default log level is error.
-  # Available log levels are: critical, error, warning, info, debug
- # level: error
-    
-    
-  ### File as output
-  #file:
-    # Path to the directory where to save the generated files. The option is mandatory.
-    #path: "/tmp/topbeat"
-
-    # Name of the generated files. The default is `topbeat` and it generates files: `topbeat`, `topbeat.1`, `topbeat.2`, etc.
-    #filename: topbeat
-
-    # Maximum size in kilobytes of each file. When this size is reached, the files are
-    # rotated. The default value is 10 MB.
-    #rotate_every_kb: 10000
-
-    # Maximum number of files under path. When this number of files is reached, the
-    # oldest file is deleted and the rest are shifted from last to first. The default
-    # is 7 files.
-    #number_of_files: 7
-
-
-  ### Console output
-  # console:
-    # Pretty print json event
-    #pretty: false
-    
+logging:
+  level:
+    root: WARN
+    io.github.hebra.elasticsearch.beat.meterbeat: INFO
+    org.org.springframework.security: WARN

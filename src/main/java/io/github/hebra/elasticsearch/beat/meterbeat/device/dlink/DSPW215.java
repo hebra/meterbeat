@@ -55,9 +55,6 @@ public class DSPW215 implements IDevice
 
 		try
 		{
-
-			HttpPost request = new HttpPost( url );
-
 			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout( 15_000 ).setConnectTimeout( 15_000 ).setConnectionRequestTimeout( 15_000 ).build();
 
 			HttpClient client = HttpClientBuilder.create().setConnectionTimeToLive( 5, TimeUnit.SECONDS ).setConnectionReuseStrategy( new NoConnectionReuseStrategy() ).build();
