@@ -1,3 +1,11 @@
+/**
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
+ * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
+ ***/
 package io.github.hebra.elasticsearch.beat.meterbeat.service;
 
 import java.io.FileOutputStream;
@@ -31,7 +39,8 @@ import lombok.Setter;
 @ConfigurationProperties( "output.csv" )
 public class CSVFileOutputService implements OutputService
 {
-	private static final Logger log = LoggerFactory.getLogger( CSVFileOutputService.class );
+	private static final Logger log = LoggerFactory
+			.getLogger( CSVFileOutputService.class );
 
 	@Getter
 	@Setter
@@ -96,11 +105,17 @@ public class CSVFileOutputService implements OutputService
 		if ( isEnable() )
 		{
 
-			try (PrintWriter writer = new PrintWriter( new FileOutputStream( outputPath.toFile(), true ) ))
+			try (PrintWriter writer = new PrintWriter(
+					new FileOutputStream( outputPath.toFile(), true ) ))
 			{
-				CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader().withDelimiter( delimiter ).withQuote( quote ).withQuoteMode( QuoteMode.NON_NUMERIC ).withSkipHeaderRecord( true );
+				CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader()
+						.withDelimiter( delimiter )
+						.withQuote( quote )
+						.withQuoteMode( QuoteMode.NON_NUMERIC )
+						.withSkipHeaderRecord( true );
 
-				CSVPrinter csvFilePrinter = new CSVPrinter( writer, csvFileFormat );
+				CSVPrinter csvFilePrinter = new CSVPrinter( writer,
+						csvFileFormat );
 				csvFilePrinter.printRecord( output.asIterable() );
 				csvFilePrinter.close();
 			}

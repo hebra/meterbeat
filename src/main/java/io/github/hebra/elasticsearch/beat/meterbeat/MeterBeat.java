@@ -1,5 +1,5 @@
 /**
- * (C) 2016 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
  * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
  * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -33,7 +33,8 @@ public class MeterBeat implements CommandLineRunner
 	@Autowired
 	private InputDevicesConfiguration inputDevicesConfiguration;
 
-	private static final Logger log = LoggerFactory.getLogger( MeterBeat.class );
+	private static final Logger log = LoggerFactory
+			.getLogger( MeterBeat.class );
 
 	public static void main( String[] args )
 	{
@@ -45,20 +46,28 @@ public class MeterBeat implements CommandLineRunner
 	{
 		log.info( "Starting MeterBeat" );
 
-		final ActorRef master = actorSystem.actorOf( springExtension.props( "masterActor" ), "master" );
+		inputDevicesConfiguration.getDevices()
+				.parallelStream()
+				.forEach( deviceConfig -> {
 
-		inputDevicesConfiguration.getDevices().parallelStream().forEach( deviceConfig -> {
-
-			try
-			{
-				master.tell( deviceConfig.getType().getHandlerClass().newInstance().config( deviceConfig ), ActorRef.noSender() );
-			}
-			catch ( final IllegalAccessException | InstantiationException iEx )
-			{
-				log.error( iEx.getMessage() );
-				iEx.printStackTrace();
-			}
-		} );
+					try
+					{
+						actorSystem
+								.actorOf( springExtension.props( "fetchActor" ),
+										"fetch-".concat( deviceConfig.getName()
+												.replaceAll( " ", "" ) ) )
+								.tell( deviceConfig.getType()
+										.getHandlerClass()
+										.newInstance()
+										.config( deviceConfig ),
+										ActorRef.noSender() );
+					}
+					catch ( InstantiationException
+							| IllegalAccessException iEx )
+					{
+						log.error( iEx.getMessage() );
+					}
+				} );
 	}
 
 }

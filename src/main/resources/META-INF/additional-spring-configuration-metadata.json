@@ -38,5 +38,45 @@
     "name": "input.timeout",
     "type": "java.lang.Long",
     "description": "The HTTP connection timeout in seconds when fetching data from a device"
+  },
+  {
+    "name": "output.elasticsearch.hosts",
+    "type": "java.util.List",
+    "description": "List of Elasticsearch hosts in the cluster"
+  },
+  {
+    "name": "output.elasticsearch.username",
+    "type": "java.lang.String",
+    "description": "An optional username to authenticate to Elasticsearch if required"
+  },
+  {
+    "name": "output.elasticsearch.password",
+    "type": "java.lang.String",
+    "description": "An optional password when authentication for Elasticsearch service is required"
+  },
+  {
+    "name": "output.elasticsearch.worker",
+    "type": "java.lang.String",
+    "description": "Number of parallel workers when accessing Elasticsearch"
+  },
+  {
+    "name": "output.elasticsearch.index",
+    "type": "java.lang.String",
+    "description": "Name of the index to use for storing data. Default is 'meterbeat'"
+  },
+  {
+    "name": "output.elasticsearch.path",
+    "type": "java.lang.String",
+    "description": "The path in the URL to the Elasticsearch root, default is empty"
+  },
+  {
+    "name": "output.elasticsearch.max_retries",
+    "type": "java.lang.String",
+    "description": "Number of retries when network connections are faulty. Default is 3 retries"
+  },
+  {
+    "name": "output.elasticsearch.timeout",
+    "type": "java.lang.String",
+    "description": "The timeout in seconds to wait for a network connection, and if successful, to send data to the Elasticsearch service"
   }
 ]}

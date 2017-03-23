@@ -6,35 +6,41 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
  * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
  ***/
-package io.github.hebra.elasticsearch.beat.meterbeat.service;
 
-import java.io.IOException;
+package io.github.hebra.elasticsearch.beat.meterbeat.output;
+
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
 import io.searchbox.client.JestClient;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.IndicesExists;
-import io.searchbox.indices.mapping.PutMapping;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 import lombok.Getter;
 import lombok.Setter;
 
-@Service
 @Configuration
 @Component
 @ConfigurationProperties( "output.elasticsearch" )
-public class ElasticSearchOutputService implements OutputService
+public class JestClientBean
 {
-	private static final Logger log = LoggerFactory
-			.getLogger( ElasticSearchOutputService.class );
+	@Getter
+	@Setter
+	private List < String > hosts;
+
+	@Getter
+	@Setter
+	private String username;
+
+	@Getter
+	@Setter
+	private String password;
 
 	@Getter
 	@Setter
@@ -48,39 +54,33 @@ public class ElasticSearchOutputService implements OutputService
 	@Setter
 	private String path = "";
 
-	@Autowired
-	private JestClient jestClient;
+	@Getter
+	@Setter
+	private int max_retries = 3;
 
-	@Override
-	public boolean isConfigured()
+	@Getter
+	@Setter
+	private int timeout = 10;
+
+	private static final Logger log = LoggerFactory
+			.getLogger( io.searchbox.client.JestClientFactory.class );
+
+	@Bean
+	public JestClient jestClient()
 	{
-		return jestClient != null && StringUtils.isNoneEmpty( index );
-	}
+		final JestClientFactory factory = new JestClientFactory();
 
-	@Override
-	public void send( BeatOutput output )
-	{
-		try
+		final HttpClientConfig.Builder configBuilder = new HttpClientConfig.Builder(
+				hosts ).connTimeout( timeout ).readTimeout( timeout );
+
+		if ( StringUtils.isNoneEmpty( username ) )
 		{
-			if ( !jestClient
-					.execute( new IndicesExists.Builder( index ).build() )
-					.isSucceeded() )
-			{
-				jestClient.execute( new CreateIndex.Builder( index ).build() );
-
-				// Add a default mapping to store timestamps
-				jestClient.execute( new PutMapping.Builder( index,
-						output.type(), "{\"_timestamp\":{\"enabled\" : true}}" )
-								.build() );
-			}
-
-			jestClient.execute( new PutMapping.Builder( index, output.type(),
-					output.asJson() ).build() );
-		}
-		catch ( IOException ioEx )
-		{
-			log.error( ioEx.getMessage() );
+			configBuilder.defaultCredentials( username, password );
 		}
 
+		factory.setHttpClientConfig(
+				configBuilder.multiThreaded( true ).build() );
+
+		return factory.getObject();
 	}
 }

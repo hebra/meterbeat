@@ -6,26 +6,17 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
  * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
  ***/
-package io.github.hebra.elasticsearch.beat.meterbeat.akka;
+package io.github.hebra.elasticsearch.beat.meterbeat.configuration;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
 
-import akka.actor.Extension;
-import akka.actor.Props;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Component
-public class SpringExtension implements Extension
+public class ObjectMapperBean
 {
-	private ApplicationContext applicationContext;
-
-	public void initialize( ApplicationContext applicationContext )
+	@Bean
+	public ObjectMapper objectMapper()
 	{
-		this.applicationContext = applicationContext;
-	}
-
-	public Props props( String actorBeanName )
-	{
-		return Props.create( SpringActorProducer.class, applicationContext, actorBeanName );
+		return new ObjectMapper();
 	}
 }

@@ -38,7 +38,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.7.+'
 	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.+'
-	compile 'io.searchbox:jest:2.0.+'
+	compile 'io.searchbox:jest:2.4.+'
 
 	compile 'com.typesafe.akka:akka-actor_2.11:2.4.+'
 	compile 'org.apache.commons:commons-csv:1.4'

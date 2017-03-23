@@ -1,3 +1,11 @@
+/**
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
+ * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
+ * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with MeterBeat. If not, see <http://www.gnu.org/licenses/>.
+ ***/
 package io.github.hebra.elasticsearch.beat.meterbeat.configuration;
 
 import java.util.List;
@@ -30,21 +38,6 @@ public class InputDevicesConfiguration
 		LoggerFactory.getLogger( this.getClass() ).error( "{}", period );
 		LoggerFactory.getLogger( this.getClass() ).error( "{}", devices );
 	}
-	
-/*	
-	input:
-		  # In seconds, defines how often to poll devices
-		  period: 5
-
-		  devices:
-		    - name: Sample Plug 1
-		      type: DSPW215
-		      baseurl: http://10.0.0.2
-		    - name: Sample Plug 2
-		      type: DSPW215
-		      baseurl: http://10.0.0.3
-
-*/
 	
 	public static class Device {
 		

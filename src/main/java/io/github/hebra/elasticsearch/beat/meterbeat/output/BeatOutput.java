@@ -1,5 +1,5 @@
 /**
- * (C) 2016 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
  * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
  * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -9,11 +9,12 @@
 
 package io.github.hebra.elasticsearch.beat.meterbeat.output;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,11 +29,14 @@ import lombok.experimental.Accessors;
  * or a file.
  */
 @Accessors( fluent = true )
+@Component
 public class BeatOutput
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger( BeatOutput.class );
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger( BeatOutput.class );
 
-	private final ObjectMapper mapper = ObjectMapperFactory.get();
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * The timestamp of when the measurements were taken. The precision is in milliseconds. The timezone is UTC.
@@ -72,7 +76,9 @@ public class BeatOutput
 
 	public Iterable < String > asIterable()
 	{
-		return Arrays.asList( beat.beatName(), type, String.valueOf( power.value() ), power.unit(), String.valueOf( timestamp ) );
+		return Arrays.asList( beat.beatName(), type,
+				String.valueOf( power.value() ), power.unit(),
+				String.valueOf( timestamp ) );
 	}
 
 	public String asJson()
