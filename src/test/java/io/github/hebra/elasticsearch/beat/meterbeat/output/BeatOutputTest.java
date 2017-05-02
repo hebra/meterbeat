@@ -5,16 +5,20 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BeatOutputTest
 {
-	ObjectMapper mapper = ObjectMapperFactory.get();
+	@Autowired
+	ObjectMapper mapper;
 
 	private static BeatOutput getBeat()
 	{
-		return new BeatOutput().beat( new Beat().beatHostname( "testhost" ).beatName( "testname" ) ).power( new Power( 42 ) );
+		return new BeatOutput().beat(
+				new Beat().beatHostname( "testhost" ).beatName( "testname" ) )
+				.power( new Power( 42 ) );
 	}
 
 	@Test
@@ -24,9 +28,11 @@ public class BeatOutputTest
 
 		final String jsonString = mapper.writeValueAsString( beatOutput );
 
-		final BeatOutput parsedOutput = mapper.readValue( jsonString, BeatOutput.class );
+		final BeatOutput parsedOutput = mapper.readValue( jsonString,
+				BeatOutput.class );
 
-		assertEquals( beatOutput.beat().beatHostname(), parsedOutput.beat().beatHostname() );
+		assertEquals( beatOutput.beat().beatHostname(),
+				parsedOutput.beat().beatHostname() );
 	}
 
 	@Test
@@ -36,9 +42,11 @@ public class BeatOutputTest
 
 		final String jsonString = mapper.writeValueAsString( beatOutput );
 
-		final BeatOutput parsedOutput = mapper.readValue( jsonString, BeatOutput.class );
+		final BeatOutput parsedOutput = mapper.readValue( jsonString,
+				BeatOutput.class );
 
-		assertEquals( beatOutput.beat().beatName(), parsedOutput.beat().beatName() );
+		assertEquals( beatOutput.beat().beatName(),
+				parsedOutput.beat().beatName() );
 	}
 
 	@Test
@@ -48,9 +56,11 @@ public class BeatOutputTest
 
 		final String jsonString = mapper.writeValueAsString( beatOutput );
 
-		final BeatOutput parsedOutput = mapper.readValue( jsonString, BeatOutput.class );
+		final BeatOutput parsedOutput = mapper.readValue( jsonString,
+				BeatOutput.class );
 
-		assertEquals( beatOutput.power().value(), parsedOutput.power().value() );
+		assertEquals( beatOutput.power().value(),
+				parsedOutput.power().value() );
 	}
 
 }
