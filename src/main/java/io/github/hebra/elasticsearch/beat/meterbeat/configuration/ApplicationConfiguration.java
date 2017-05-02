@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import io.github.hebra.elasticsearch.beat.meterbeat.akka.SpringExtension;
 
