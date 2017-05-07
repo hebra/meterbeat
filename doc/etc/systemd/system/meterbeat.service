@@ -1,0 +1,16 @@
+[Unit]
+Description=Meterbeat
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/meterbeat
+ExecStart=/usr/bin/java -jar /opt/meterbeat/meterbeat-1.1.0-SNAPSHOT.jar
+TimeoutSec=300
+Restart=always
+Nice=19
+
+[Install]
+WantedBy=multi-user.target
