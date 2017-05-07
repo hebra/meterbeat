@@ -1,6 +1,6 @@
 /**
- * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
- * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
  * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
@@ -71,7 +71,8 @@ public class JestClientBean
 		final JestClientFactory factory = new JestClientFactory();
 
 		final HttpClientConfig.Builder configBuilder = new HttpClientConfig.Builder(
-				hosts ).connTimeout( timeout ).readTimeout( timeout );
+				hosts ).connTimeout( timeout * 1000 )
+						.readTimeout( timeout * 1000 );
 
 		if ( StringUtils.isNoneEmpty( username ) )
 		{
