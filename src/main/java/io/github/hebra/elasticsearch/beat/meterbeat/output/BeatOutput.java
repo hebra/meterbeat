@@ -43,7 +43,7 @@ public class BeatOutput
 	/**
 	 * The timestamp of when the measurements were taken. The precision is in milliseconds. The timezone is UTC.
 	 */
-	@JsonProperty( "@timestamp" )
+	@JsonProperty( "timestamp" )
 	@Setter
 	@Getter
 	private long timestamp = System.currentTimeMillis();

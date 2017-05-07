@@ -1,6 +1,6 @@
 /**
- * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software: you
- * can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * (C) 2016-2017 Hendrik Brandt <https://github.com/hebra/> This file is part of MeterBeat. MeterBeat is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option) any later version. MeterBeat is distributed
  * in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a
@@ -9,6 +9,8 @@
 package io.github.hebra.elasticsearch.beat.meterbeat.service;
 
 import java.io.IOException;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,9 +23,9 @@ import org.springframework.stereotype.Service;
 
 import io.github.hebra.elasticsearch.beat.meterbeat.output.BeatOutput;
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
-import io.searchbox.indices.mapping.PutMapping;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,29 +59,46 @@ public class ElasticSearchOutputService implements OutputService
 		return jestClient != null && StringUtils.isNoneEmpty( index );
 	}
 
+	@PostConstruct
+	private void postConstruct()
+	{
+		/*
+		 * Create the index (if not exist) in a synchronized fashion right after service was constructed to avoid future
+		 * parallel index creation exceptions from elasticsearch.
+		 */
+
+		synchronized ( jestClient )
+		{
+			try
+			{
+				if ( !jestClient
+						.execute( new IndicesExists.Builder( index ).build() )
+						.isSucceeded() )
+				{
+					jestClient.execute(
+							new CreateIndex.Builder( index ).build() );
+
+					log.info( "Index '{}' created.", index );
+				}
+			}
+			catch ( IOException ioEx )
+			{
+				log.error( ioEx.getMessage() );
+			}
+		}
+	}
+
 	@Override
 	public void send( BeatOutput output )
 	{
 		try
 		{
-			if ( !jestClient
-					.execute( new IndicesExists.Builder( index ).build() )
-					.isSucceeded() )
-			{
-				jestClient.execute( new CreateIndex.Builder( index ).build() );
-
-				// Add a default mapping to store timestamps
-				jestClient.execute( new PutMapping.Builder( index,
-						output.type(), "{\"_timestamp\":{\"enabled\" : true}}" )
-								.build() );
-			}
-
-			jestClient.execute( new PutMapping.Builder( index, output.type(),
-					output.asJson() ).build() );
+			jestClient.execute( new Index.Builder( output.asJson() )
+					.index( index ).type( output.type() ).build() );
 		}
 		catch ( IOException ioEx )
 		{
-			log.error( ioEx.getMessage() );
+			log.error( "Error while sending beat output for host '{}' to ElasticSearch: {}", output.beat().beatName(), ioEx.getMessage() );
 		}
 
 	}
