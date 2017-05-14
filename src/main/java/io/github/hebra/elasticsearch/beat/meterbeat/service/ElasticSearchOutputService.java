@@ -26,6 +26,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Index;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.indices.mapping.PutMapping;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -77,7 +78,18 @@ public class ElasticSearchOutputService implements OutputService
 				{
 					jestClient.execute(
 							new CreateIndex.Builder( index ).build() );
-
+					
+					PutMapping putMapping = new PutMapping.Builder(
+					        index,
+					        "power",
+					        "{ \"power\" : { \"properties\" : { " + 
+					        		"\"timestamp\" : {\"type\" : \"date\", \"store\" : \"yes\"}, " + 
+					        		"\"type\" : {\"type\" : \"string\", \"store\" : \"yes\"}, " + 
+					        		"\"power\" : {\"properties\" : { \"value\" : {\"type\" : \"double\", \"store\" : \"yes\"},\"unit\" : {\"type\" : \"string\", \"store\" : \"yes\"}}}, " + 
+					        		"\"beat\"  : {\"properties\" : { \"name\" : {\"type\" : \"string\", \"store\" : \"yes\"},\"hostname\" : {\"type\" : \"string\", \"store\" : \"yes\"}} } } }}"
+					).build();
+					jestClient.execute(putMapping);
+					
 					log.info( "Index '{}' created.", index );
 				}
 			}
@@ -91,6 +103,8 @@ public class ElasticSearchOutputService implements OutputService
 	@Override
 	public void send( BeatOutput output )
 	{
+		log.error( output.asJson() );
+		
 		try
 		{
 			jestClient.execute( new Index.Builder( output.asJson() )
