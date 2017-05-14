@@ -84,9 +84,9 @@ public class ElasticSearchOutputService implements OutputService
 					        "power",
 					        "{ \"power\" : { \"properties\" : { " + 
 					        		"\"timestamp\" : {\"type\" : \"date\", \"store\" : \"yes\"}, " + 
-					        		"\"type\" : {\"type\" : \"string\", \"store\" : \"yes\"}, " + 
+					        		"\"type\" : {\"type\" : \"keyword\", \"store\" : \"yes\"}, " + 
 					        		"\"power\" : {\"properties\" : { \"value\" : {\"type\" : \"double\", \"store\" : \"yes\"},\"unit\" : {\"type\" : \"string\", \"store\" : \"yes\"}}}, " + 
-					        		"\"beat\"  : {\"properties\" : { \"name\" : {\"type\" : \"string\", \"store\" : \"yes\"},\"hostname\" : {\"type\" : \"string\", \"store\" : \"yes\"}} } } }}"
+					        		"\"beat\"  : {\"properties\" : { \"name\" : {\"type\" : \"keyword\", \"store\" : \"yes\"},\"hostname\" : {\"type\" : \"string\", \"store\" : \"yes\"}} } } }}"
 					).build();
 					jestClient.execute(putMapping);
 					
