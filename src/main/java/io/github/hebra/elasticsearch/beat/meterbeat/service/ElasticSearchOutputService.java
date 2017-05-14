@@ -103,8 +103,6 @@ public class ElasticSearchOutputService implements OutputService
 	@Override
 	public void send( BeatOutput output )
 	{
-		log.error( output.asJson() );
-		
 		try
 		{
 			jestClient.execute( new Index.Builder( output.asJson() )
